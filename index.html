@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>J E G G | Home</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="home">
+  <header id="site-header" class="full-hero">
+    <div class="branding">
+      <h1>J E G G</h1>
+      <div class="subtext">design</div>
+    </div>
+    <!-- Pull handle -->
+    <div class="pull-handle" aria-hidden="true">⌄</div>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <section class="content">
+    <h2>Welcome to JEGG Design</h2>
+    <p>We specialize in facade restoration, modern carpentry, and visual identity for construction-forward brands.</p>
+    <!-- extra filler so the page can be scrolled for testing -->
+    <div style="height:1200px"></div>
+  </section>
+
+  <footer>
+    &copy; 2025 J E G G. All rights reserved.
+  </footer>
+
+  <script>
+    (function () {
+      const header = document.getElementById('site-header');
+      const isHome = document.body.classList.contains('home');
+      const pullHandle = document.querySelector('.pull-handle');
+
+      if (!header || !isHome) return;
+
+      function setScrolledState(scrolled) {
+        if (scrolled) {
+          header.classList.add('scrolled');
+          header.classList.remove('full-hero');
+          if (pullHandle) pullHandle.textContent = "⌃"; // up arrow
+        } else {
+          header.classList.add('full-hero');
+          header.classList.remove('scrolled');
+          if (pullHandle) pullHandle.textContent = "⌄"; // down arrow
+        }
+      }
+
+      function onScroll() {
+        const triggerPoint = Math.round(window.innerHeight * 0.65); // 65% of viewport
+        setScrolledState(window.scrollY > triggerPoint);
+      }
+
+      // prefer passive scroll listener for performance
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('load', onScroll);
+
+      // Pull handle: toggle collapse / expand
+      if (pullHandle) {
+        pullHandle.addEventListener('click', () => {
+          const isCollapsed = header.classList.contains('scrolled');
+
+          if (isCollapsed) {
+            // If already collapsed -> expand immediately and scroll to top
+            setScrolledState(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            // If expanded -> just scroll down; let onScroll detect crossing the threshold
+            // (this prevents collapsing the header before the viewport reaches the trigger point)
+            window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
