@@ -9,7 +9,7 @@ html, body {
   flex-direction: column;
 }
 
-/* ===== DEFAULT HEADER (non-home) ===== */
+/* ===== HEADER (default for non-home) ===== */
 #site-header,
 header {
   background-color: #111;
@@ -19,6 +19,7 @@ header {
   justify-content: flex-end;
   align-items: flex-start;
   position: relative;
+  z-index: 1000;
 }
 
 .branding { text-align: right; }
@@ -37,7 +38,7 @@ header h1, #site-header h1 {
   margin-top: 0.25rem;
 }
 
-/* ===== NAVIGATION ===== */
+/* ===== NAV (default) ===== */
 nav {
   background-color: #222;
   display: flex;
@@ -48,6 +49,9 @@ nav {
   visibility: visible;
   pointer-events: auto;
   transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+  align-items: center;
+  height: 64px;       /* fixed nav height for consistent layout */
+  box-sizing: border-box;
 }
 
 nav a {
@@ -80,6 +84,7 @@ nav a:hover::after { width: 100%; }
   padding: 2rem;
   max-width: 1000px;
   margin: auto;
+  box-sizing: border-box;
 }
 
 footer {
@@ -182,7 +187,7 @@ button {
 /* =============== HOMEPAGE HERO ANIMATION ================= */
 /* ========================================================= */
 
-/* Full-screen hero state */
+/* Full-screen hero state (homepage) */
 body.home #site-header.full-hero {
   position: fixed;
   inset: 0;
@@ -190,9 +195,9 @@ body.home #site-header.full-hero {
   height: 100vh;
   background: #111 url('images/light-concrete.jpg') center/cover no-repeat;
   display: flex;
-  justify-content: center; /* center branding horizontally */
+  justify-content: center;
   align-items: center;
-  transition: all 1s ease;
+  transition: all 0.9s ease;
   overflow: hidden;
   z-index: 1000;
 }
@@ -209,7 +214,7 @@ body.home #site-header.full-hero .subtext {
   font-size: 1.5rem;
 }
 
-/* Hide nav in hero mode */
+/* Hide nav while in hero mode */
 body.home #site-header.full-hero ~ nav {
   opacity: 0;
   visibility: hidden;
@@ -221,15 +226,15 @@ body.home #site-header.full-hero ~ nav {
 body.home #site-header.scrolled {
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0;
   width: 100%;
   height: 120px;
   padding: 2rem;
   background-color: #111;
   display: flex;
-  justify-content: flex-end; /* branding to right */
+  justify-content: flex-end;
   align-items: flex-start;
-  transition: all 1s ease;
+  transition: all 0.6s ease;
   z-index: 1000;
 }
 
@@ -246,12 +251,23 @@ body.home #site-header.scrolled .subtext {
   color: #ccc;
 }
 
-/* Show nav when compact */
+/* When header is scrolled, fix nav directly below header and make visible */
 body.home #site-header.scrolled ~ nav {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateY(0);
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateY(0) !important;
+
+  position: fixed;
+  top: 120px;    /* sits directly under the scrolled header */
+  left: 0;
+  width: 100%;
+  z-index: 900;  /* below header (header z-index is 1000) */
+}
+
+/* Make sure content isn't hidden behind fixed header+nav after collapse */
+body.home #site-header.scrolled ~ nav ~ .content {
+  padding-top: calc(120px + 64px); /* header height + nav height */
 }
 
 /* Enough scroll space */
@@ -261,3 +277,22 @@ body.home .content {
 
 /* Prevent horizontal scrollbars */
 body { overflow-x: hidden; }
+
+/* Pull handle styles */
+.pull-handle {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  animation: bounce 1.5s infinite;
+  z-index: 1100;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 8px); }
+}
+
